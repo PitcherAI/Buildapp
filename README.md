@@ -1,14 +1,14 @@
 ---
 
-title: Gemini Task Automation
+Title: Gemini Task Automation
 
-emoji: 🤖
+Emoji: 🤖
 
-colorFrom: blue
+ColorFrom: blue
 
-colorTo: purple
+ColorTo: purple
 
-sdk: docker
+SDK: docker
 
 app\_port: 8080
 
@@ -114,7 +114,7 @@ STUDENT\_SECRET=your\_custom\_secret\_string
 
 &nbsp;                    ┌──────────────┐      ┌─────────────┐
 
-&nbsp;                    │  GitHub API  │─────▶│GitHub Pages │
+&nbsp;                    │  GitHub API  │─────▶│Hugging Face │
 
 &nbsp;                    │ (Create Repo)│      │  (Deploy)   │
 
@@ -183,8 +183,6 @@ GEMINI\_TDS\_PROJECT1/
 ├── .dockerignore        # Docker build exclusions
 
 ├── .gitignore           # Git exclusions
-
-├── .env.example         # Template for environment variables
 
 ├── LICENSE              # MIT license
 
@@ -705,5 +703,6 @@ MIT License - see \[LICENSE](LICENSE) file for details
 
 
 \*\*Built for TDS Project 1\*\* - Automated task generation and deployment system
+
 
 
