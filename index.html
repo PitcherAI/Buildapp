@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>🚀 BuildApp Dashboard</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+.container{max-width:600px;margin:0 auto;background:white;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,0.1);overflow:hidden}
+.header{padding:30px;text-align:center;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white}
+.header h1{font-size:2.5em;margin-bottom:10px}
+.header p{font-size:1.1em;opacity:0.9}
+.form-section{padding:30px;border-bottom:1px solid #eee}
+.input-group{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+input,textarea,button{flex:1;min-width:200px;padding:15px;border:none;border-radius:12px;font-size:16px}
+input,textarea{background:#f8fafc;border:2px solid #e2e8f0}
+input:focus,textarea:focus{outline:none;border-color:#4f46e5}
+button{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;cursor:pointer;font-weight:bold;transition:all 0.3s}
+button:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(79,70,229,0.3)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;font-size:14px}
+.info-item{background:#f8fafc;padding:12px;border-radius:8px}
+.info-label{font-weight:bold;color:#4f46e5;margin-bottom:5px}
+.info-value{font-family:monospace;background:#e2e8f0;padding:6px;border-radius:4px}
+.progress-section{padding:20px;text-align:center}
+.progress-bar{background:#e2e8f0;border-radius:10px;height:20px;overflow:hidden;margin:10px 0}
+.progress-fill{background:linear-gradient(90deg,#10b981,#059669);height:100%;transition:width 0.3s;border-radius:10px}
+.status-badge{padding:8px 16px;border-radius:20px;font-weight:bold;display:inline-block;margin:5px}
+.processing{background:#fef3c7;color:#92400e}
+.generating{background:#dbeafe;color:#1e40af}
+.deploying{background:#d1fae5;color:#065f46}
+.completed{background:#d1fae5;color:#065f46}
+.failed{background:#fee2e2;color:#dc2626}
+.status-section{padding:30px}
+.status-card{background:#f8fafc;border-radius:12px;padding:20px;margin:10px 0;border-left:4px solid #4f46e5}
+.success{border-left-color:#10b981!important}
+.error{border-left-color:#ef4444!important}
+.live-url{color:#4f46e5;font-weight:bold;text-decoration:none;font-size:18px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🚀 BuildApp</h1>
+    <p>Describe → Build → Live in 45s!</p>
+  </div>
+  
+  <div class="form-section">
+    <div class="input-group">
+      <input id="taskInput" placeholder="Task ID" value="captcha-solver-123">
+      <input id="roundInput" type="number" value="1" min="1">
+    </div>
+    <div class="input-group">
+      <textarea id="briefInput" rows="2" placeholder="Create captcha solver...">Create a captcha solver that handles ?url=https://.../image.png</textarea>
+    </div>
+    <div class="input-group">
+      <button onclick="submitTask()">🚀 BUILD APP</button>
+    </div>
+  </div>
+  
+  <div id="infoSection" class="progress-section hidden">
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">🔑 Task</div>
+        <div class="info-value" id="infoTask">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">🔢 Round</div>
+        <div class="info-value" id="infoRound">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">📝 Brief</div>
+        <div class="info-value" id="infoBrief">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">⏳ Progress</div>
+        <div class="info-value" id="infoProgress">-</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div id="statusBadge" class="status-badge">Ready</div>
+  </div>
+  
+  <div class="status-section">
+    <div id="status" class="status-card">
+      <h3>📋 Status</h3>
+      <p>Enter brief → Click BUILD!</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTaskId = null;
+const API_URL = 'http://localhost:3000';
+
+async function submitTask() {
+  const task = document.getElementById('taskInput').value;
+  const round = parseInt(document.getElementById('roundInput').value);
+  const brief = document.getElementById('briefInput').value;
+  
+  document.querySelector('button[onclick="submitTask()"]').innerHTML = '⏳ BUILDING...';
+  document.querySelector('button[onclick="submitTask()"]').disabled = true;
+  
+  try {
+    const response = await fetch(`${API_URL}/ready`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: "student@example.com",
+        secret: "secret123",
+        task: task,
+        round: round,
+        nonce: "nonce-" + Date.now(),
+        brief: brief,
+        checks: ["Repo has MIT license", "README.md is professional"],
+        evaluation_url: "https://example.com/notify",
+        attachments: []
+      })
+    });
+    const result = await response.json();
+    currentTaskId = result.id;
+    
+    // Show basic info
+    document.getElementById('infoTask').textContent = task;
+    document.getElementById('infoRound').textContent = round;
+    document.getElementById('infoBrief').textContent = brief.substring(0,30) + '...';
+    document.getElementById('infoSection').classList.remove('hidden');
+    
+    pollStatus();
+  } catch(e) {
+    showStatus('❌ Connection Error: ' + e.message, 'error');
+  }
+  
+  setTimeout(() => {
+    document.querySelector('button[onclick="submitTask()"]').innerHTML = '🚀 BUILD APP';
+    document.querySelector('button[onclick="submitTask()"]').disabled = false;
+  }, 2000);
+}
+
+async function pollStatus() {
+  const statuses = {
+    'processing': {text: '🔄 Starting...', progress: 10, badge: 'processing'},
+    'generating': {text: '🤖 AI Building...', progress: 40, badge: 'generating'},
+    'deploying': {text: '🚀 Deploying...', progress: 70, badge: 'deploying'},
+    'completed': {text: '🎉 SUCCESS!', progress: 100, badge: 'completed'},
+    'failed': {text: '❌ FAILED', progress: 100, badge: 'failed'}
+  };
+  
+  const interval = setInterval(async () => {
+    if (!currentTaskId) return;
+    try {
+      const response = await fetch(`${API_URL}/status/${currentTaskId}`);
+      const data = await response.json();
+      
+      const status = statuses[data.status] || statuses['processing'];
+      
+      // Update progress
+      document.getElementById('infoProgress').textContent = status.text;
+      document.getElementById('progressFill').style.width = status.progress + '%';
+      document.getElementById('statusBadge').textContent = status.text;
+      document.getElementById('statusBadge').className = `status-badge ${status.badge}`;
+      
+      if (data.status === 'completed') {
+        clearInterval(interval);
+        showStatus('🎉 SUCCESS!', 'success', data.id, data.live_url, data.repo_url);
+      } else if (data.status === 'failed') {
+        clearInterval(interval);
+        showStatus(`❌ Failed: ${data.error}`, 'error');
+      }
+    } catch(e) {
+      clearInterval(interval);
+      showStatus('❌ Connection Lost', 'error');
+    }
+  }, 2000);
+}
+
+function showStatus(message, type, id = '', liveUrl = '', repoUrl = '') {
+  const statusDiv = document.getElementById('status');
+  statusDiv.className = `status-card ${type}`;
+  statusDiv.innerHTML = `
+    <h3>${message}</h3>
+    ${id ? `<p><strong>ID:</strong> <code>${id}</code></p>` : ''}
+    ${liveUrl ? `
+      <p><strong>🌐 LIVE:</strong> <a href="${liveUrl}" target="_blank" class="live-url">${liveUrl}</a></p>
+      <p><strong>📂 GITHUB:</strong> <a href="${repoUrl}" target="_blank">${repoUrl}</a></p>
+    ` : ''}
+  `;
+}
+</script>
+</body>
+</html>
